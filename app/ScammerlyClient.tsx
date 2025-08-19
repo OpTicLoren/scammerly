@@ -365,7 +365,7 @@ export default function ScammerlyClient() {
 
       {/* Main Content */}
       <main className="main-content">
-        <h1 className="hero-title">Don't Get Scammed.<br />Get Scammerly.</h1>
+        <h1 className="hero-title">Do not Get Scammed.<br />Get Scammerly.</h1>
         <p className="hero-subtitle">
           Protect yourself from AI-powered scams, fake celebrity endorsements, and deepfake videos with real-time detection.
         </p>
@@ -382,7 +382,7 @@ export default function ScammerlyClient() {
 
         {/* Testing Section */}
         <section className="testing-section">
-          <h2 className="testing-title">AI Scams Are Everywhere. We'll Spot Them First.</h2>
+          <h2 className="testing-title">AI Scams Are Everywhere. We will Spot Them First.</h2>
           <p className="testing-subtitle">Paste a suspicious link to test our detection technology</p>
           
           <div className="input-group">
@@ -435,7 +435,7 @@ export default function ScammerlyClient() {
                 const emailInput = document.getElementById('email-input') as HTMLInputElement;
                 const email = emailInput?.value;
                 if (email) {
-                  alert('Thanks for joining the waitlist! We\'ll be in touch soon.');
+                  alert('Thanks for joining the waitlist! We will be in touch soon.');
                   emailInput.value = '';
                 }
               }}
