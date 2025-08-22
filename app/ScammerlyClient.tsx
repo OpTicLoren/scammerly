@@ -1,6 +1,11 @@
 'use client';
 
+import { detectScam } from './detection/scamDetection.js';
+import { useState } from 'react';
+
 export default function ScammerlyClient() {
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState<any>(null);
   return (
     <>
       <style jsx global>{`
@@ -14,45 +19,14 @@ export default function ScammerlyClient() {
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
           line-height: 1.6;
           color: #1A1A1A;
-          background: linear-gradient(135deg, #E3F2FD 0%, #FFF9E6 100%);
+          background: linear-gradient(135deg, #B8E0FF 0%, #FFE88A 100%);
           min-height: 100vh;
           overflow-x: hidden;
         }
 
-        /* Floating background blobs */
-        .blob {
-          position: absolute;
-          border-radius: 50%;
-          opacity: 0.6;
-          z-index: 0;
-        }
 
-        .blob-1 {
-          width: 300px;
-          height: 300px;
-          background: #E8F5F0;
-          top: -100px;
-          right: -50px;
-          border-radius: 40% 60% 70% 30% / 40% 40% 60% 50%;
-        }
 
-        .blob-2 {
-          width: 200px;
-          height: 200px;
-          background: #FFF9E6;
-          bottom: 100px;
-          left: -50px;
-          border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-        }
 
-        .blob-3 {
-          width: 150px;
-          height: 150px;
-          background: #E8F5F0;
-          top: 50%;
-          right: 10%;
-          border-radius: 50% 30% 70% 50% / 60% 70% 30% 40%;
-        }
 
         /* Header */
         .header {
@@ -179,7 +153,7 @@ export default function ScammerlyClient() {
           flex: 1;
           min-width: 300px;
           padding: 16px 20px;
-          border: 2px solid #E3F2FD;
+          border: 2px solid #B8E0FF;
           border-radius: 12px;
           font-size: 16px;
           background: white;
@@ -196,7 +170,7 @@ export default function ScammerlyClient() {
         }
 
         .test-button {
-          background: #E8F5F0;
+          background: #B8E0FF;
           color: #1A1A1A;
           border: 2px solid #1A1A1A;
           padding: 16px 32px;
@@ -267,7 +241,7 @@ export default function ScammerlyClient() {
 
         .email-input {
           padding: 12px 16px;
-          border: 2px solid #E3F2FD;
+          border: 2px solid #B8E0FF;
           border-radius: 8px;
           font-size: 14px;
           min-width: 250px;
@@ -279,7 +253,7 @@ export default function ScammerlyClient() {
         }
 
         .email-button {
-          background: #FFF9E6;
+          background: #FFE88A;
           color: #1A1A1A;
           border: 2px solid #1A1A1A;
           padding: 12px 24px;
@@ -292,6 +266,110 @@ export default function ScammerlyClient() {
         .email-button:hover {
           background: #1A1A1A;
           color: white;
+        }
+
+        /* Analysis results */
+        .analysis-results {
+          margin-top: 24px;
+          padding: 24px;
+          border-radius: 16px;
+          text-align: left;
+        }
+
+        .result-safe {
+          background: linear-gradient(135deg, #E8F5E8 0%, #F0F8F0 100%);
+          border: 2px solid #4CAF50;
+        }
+
+        .result-low {
+          background: linear-gradient(135deg, #E8F5E8 0%, #F0F8F0 100%);
+          border: 2px solid #4CAF50;
+        }
+
+        .result-medium {
+          background: linear-gradient(135deg, #FFF3E0 0%, #FFF8F0 100%);
+          border: 2px solid #FF5722;
+        }
+
+        .result-high {
+          background: linear-gradient(135deg, #FFEBEE 0%, #FFF5F5 100%);
+          border: 2px solid #F44336;
+        }
+
+        .result-header {
+          font-size: 18px;
+          font-weight: 700;
+          margin-bottom: 12px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .result-details {
+          margin-bottom: 16px;
+        }
+
+        .detected-pattern {
+          background: rgba(26, 26, 26, 0.05);
+          padding: 8px 12px;
+          border-radius: 8px;
+          margin: 8px 0;
+          font-size: 14px;
+        }
+
+        .pattern-type {
+          font-weight: 600;
+          color: #1A1A1A;
+        }
+
+        .pattern-confidence {
+          color: #666;
+          font-size: 12px;
+        }
+
+        .recommendations {
+          margin-top: 16px;
+        }
+
+        .recommendations h4 {
+          font-size: 14px;
+          font-weight: 600;
+          margin-bottom: 8px;
+          color: #1A1A1A;
+        }
+
+        .recommendation {
+          font-size: 13px;
+          color: #555;
+          margin: 4px 0;
+          padding-left: 8px;
+        }
+
+        .analyzing-spinner {
+          display: inline-block;
+          width: 16px;
+          height: 16px;
+          border: 2px solid #E3F2FD;
+          border-radius: 50%;
+          border-top-color: #1A1A1A;
+          animation: spin 1s ease-in-out infinite;
+          margin-right: 8px;
+        }
+
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+
+        .test-button:disabled {
+          background: #B8E0FF;
+          color: #999;
+          cursor: not-allowed;
+        }
+
+        .test-button:disabled:hover {
+          background: #B8E0FF;
+          color: #999;
+          transform: none;
         }
 
         /* Responsive design */
@@ -334,23 +412,10 @@ export default function ScammerlyClient() {
           66% { transform: translateY(5px) rotate(-1deg); }
         }
 
-        .blob {
-          animation: float 8s ease-in-out infinite;
-        }
 
-        .blob-2 {
-          animation-delay: -2s;
-        }
-
-        .blob-3 {
-          animation-delay: -4s;
-        }
       `}</style>
 
-      {/* Background blobs */}
-      <div className="blob blob-1"></div>
-      <div className="blob blob-2"></div>
-      <div className="blob blob-3"></div>
+
 
       {/* Header */}
       <header className="header">
@@ -394,19 +459,110 @@ export default function ScammerlyClient() {
             />
             <button 
               className="test-button"
-              onClick={() => {
+              disabled={isAnalyzing}
+              onClick={async () => {
                 const input = document.getElementById('url-input') as HTMLInputElement;
                 const url = input?.value.trim();
-                if (url) {
-                  alert('Analyzing: ' + url + '\n\nThis is a demo - real analysis coming soon!');
-                } else {
+                if (!url) {
                   alert('Please paste a URL to analyze');
+                  return;
+                }
+                
+                setIsAnalyzing(true);
+                setAnalysisResult(null);
+                
+                try {
+                  const result = await detectScam(url);
+                  setAnalysisResult(result);
+                } catch (error) {
+                  setAnalysisResult({
+                    success: false,
+                    error: 'Analysis failed. Please try again.',
+                    message: '❌ Analysis Error - Please check your connection and try again'
+                  });
+                } finally {
+                  setIsAnalyzing(false);
                 }
               }}
             >
-              Analyze Link
+              {isAnalyzing ? (
+                <>
+                  <span className="analyzing-spinner"></span>
+                  Analyzing...
+                </>
+              ) : (
+                'Analyze Link'
+              )}
             </button>
           </div>
+
+          {/* Analysis Results */}
+          {analysisResult && (
+            <div className={`analysis-results result-${analysisResult.riskLevel || 'low'}`}>
+              <div className="result-header">
+                {analysisResult.message}
+              </div>
+              
+              {analysisResult.success && analysisResult.detectedPatterns && analysisResult.detectedPatterns.length > 0 && (
+                <div className="result-details">
+                  <strong>Deception Patterns Detected:</strong>
+                  {analysisResult.detectedPatterns.map((pattern: any, index: number) => (
+                    <div key={index} className="detected-pattern">
+                      <div className="pattern-type">{pattern.category}: {pattern.type}</div>
+                      <div style={{margin: '6px 0', fontSize: '13px', fontStyle: 'italic'}}>
+                        Why this matters: {pattern.why}
+                      </div>
+                      <div>{pattern.explanation}</div>
+                      <div className="pattern-confidence">{pattern.confidence}% confidence | +{pattern.riskScore} risk points</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {analysisResult.success && analysisResult.combinationWarning && (
+                <div style={{
+                  background: 'rgba(244, 67, 54, 0.1)',
+                  border: '1px solid #F44336',
+                  borderRadius: '8px',
+                  padding: '12px',
+                  margin: '12px 0',
+                  fontSize: '14px'
+                }}>
+                  <strong style={{color: '#F44336'}}>⚠️ {analysisResult.combinationWarning.type}</strong>
+                  <div style={{marginTop: '4px'}}>{analysisResult.combinationWarning.explanation}</div>
+                </div>
+              )}
+
+              {analysisResult.success && analysisResult.educationalInsight && (
+                <div style={{
+                  background: 'rgba(26, 26, 26, 0.05)',
+                  borderRadius: '8px',
+                  padding: '12px',
+                  margin: '12px 0',
+                  fontSize: '14px',
+                  borderLeft: '4px solid #1A1A1A'
+                }}>
+                  <strong>💡 Understanding Deception Patterns:</strong>
+                  <div style={{marginTop: '4px'}}>{analysisResult.educationalInsight}</div>
+                </div>
+              )}
+
+              {analysisResult.success && analysisResult.platform && (
+                <div style={{fontSize: '14px', color: '#666', marginBottom: '12px'}}>
+                  Platform: {analysisResult.platform.charAt(0).toUpperCase() + analysisResult.platform.slice(1)}
+                </div>
+              )}
+
+              {analysisResult.success && analysisResult.recommendations && analysisResult.recommendations.length > 0 && (
+                <div className="recommendations">
+                  <h4>Safety Recommendations:</h4>
+                  {analysisResult.recommendations.map((rec: string, index: number) => (
+                    <div key={index} className="recommendation">{rec}</div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
           
           <div className="upload-option">
             or <span 
