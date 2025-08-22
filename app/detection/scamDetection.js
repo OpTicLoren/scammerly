@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 // Scammerly Enhanced Deception Detection Framework
 // Core Philosophy: Sophisticated pattern recognition based on extensive scam analysis
 // We detect "deception intent" not just "AI usage" - focusing on WHY patterns matter
